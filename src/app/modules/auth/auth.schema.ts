@@ -80,4 +80,4 @@ authSchema.pre('save', async function (next) {
   next();
 });
 
-export const Auth = model('Auth', authSchema);
+export const Auth = model('auth', authSchema);

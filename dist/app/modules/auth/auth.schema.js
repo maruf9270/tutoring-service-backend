@@ -86,4 +86,4 @@ authSchema.pre('save', function (next) {
         next();
     });
 });
-exports.Auth = (0, mongoose_1.model)('Auth', authSchema);
+exports.Auth = (0, mongoose_1.model)('auth', authSchema);

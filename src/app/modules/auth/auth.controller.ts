@@ -4,6 +4,22 @@ import sendResponse from '../../../shared/sendResponse';
 import { IUser } from './auth.interface';
 import { AuthServices } from './auth.services';
 
+// For getting all user
+
+const gethUsers: RequestHandler = async (req, res, next) => {
+  try {
+    const users = await AuthServices.fetchUsers();
+    sendResponse(res, {
+      data: users,
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Users featched successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 // For creating new user
 const createNewUser: RequestHandler = async (req, res, next): Promise<void> => {
   try {
@@ -81,4 +97,5 @@ export const AuthController = {
   loginUsr,
   updateUinfo,
   removeuser,
+  gethUsers,
 };

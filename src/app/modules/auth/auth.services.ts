@@ -8,6 +8,12 @@ import { InvertToUppercast } from '../../../helpers/emailCapitalLetter';
 import { IAuth, ILogin, ITokens, IUser } from './auth.interface';
 import { Auth } from './auth.schema';
 
+// For getting all the users
+const fetchUsers = async (): Promise<IAuth[]> => {
+  const result = await Auth.find();
+  return result;
+};
+
 // For creating new user
 const postUser = async (params: IAuth): Promise<IAuth> => {
   const result = await Auth.create(params);
@@ -82,4 +88,10 @@ const deleteUser = async (params: string, user: IUser) => {
   const result = await Auth.deleteOne({ _id: params });
   return result;
 };
-export const AuthServices = { postUser, login, patchUser, deleteUser };
+export const AuthServices = {
+  postUser,
+  login,
+  patchUser,
+  deleteUser,
+  fetchUsers,
+};

@@ -37,4 +37,40 @@ const loginVlaidator = zod_1.z.object({
         password: zod_1.z.string({ required_error: 'Password is required' }),
     }),
 });
-exports.AuthValidator = { authValidator, loginVlaidator };
+const patchValidator = zod_1.z.object({
+    body: zod_1.z.object({
+        name: zod_1.z
+            .object({
+            firstName: zod_1.z.string().optional(),
+            middleName: zod_1.z.string().optional(),
+            lastName: zod_1.z.string().optional(),
+        })
+            .optional(),
+        role: zod_1.z
+            .enum(['super_admin', 'admin', 'user'], {
+            required_error: 'Role is required',
+        })
+            .optional(),
+        email: zod_1.z
+            .string({ required_error: 'Email is required' })
+            .email({ message: 'Provide a valid email' })
+            .optional(),
+        phone: zod_1.z
+            .string({ required_error: 'Email is required' })
+            .min(11, { message: 'Provide a valid mobile number' })
+            .max(15, { message: 'Provide a valid mobile number' })
+            .optional(),
+        address: zod_1.z.string({ required_error: 'Address is required' }).optional(),
+        profileImage: zod_1.z
+            .string({
+            required_error: 'Profile image link is required',
+        })
+            .optional(),
+        password: zod_1.z
+            .string({ required_error: 'Password is required' })
+            .min(6, { message: 'Password must be at least 6 charecter' })
+            .max(32, { message: 'Password cannot be more then 32 charecter' })
+            .optional(),
+    }),
+});
+exports.AuthValidator = { authValidator, loginVlaidator, patchValidator };

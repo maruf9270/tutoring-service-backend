@@ -52,8 +52,24 @@ const deleteService: RequestHandler = async (req, res, next) => {
   }
 };
 
+//for getting services
+const getServices: RequestHandler = async (req, res, next) => {
+  try {
+    const result = await ServicesService.getAllServices();
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      data: result,
+      message: 'Services retrieved successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const ServiceController = {
   createNewService,
   updateService,
   deleteService,
+  getServices,
 };

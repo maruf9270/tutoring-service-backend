@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 const reviewValidator = z.object({
   body: z.object({
-    userId: z.string({ required_error: 'User id not provided' }),
     rating: z.string({ required_error: 'Rating not provided' }),
     review: z.string({ required_error: 'Review not provided' }),
     serviceId: z.string({ required_error: 'Service id not provided' }),

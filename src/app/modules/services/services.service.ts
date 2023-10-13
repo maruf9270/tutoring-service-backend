@@ -21,4 +21,15 @@ const deleteService = async (params: string): Promise<IService | null> => {
   const result = await Service.findByIdAndDelete(params);
   return result;
 };
-export const ServicesService = { postService, patchService, deleteService };
+
+// For getting all the services
+const getAllServices = async (): Promise<IService[]> => {
+  const result = await Service.find();
+  return result;
+};
+export const ServicesService = {
+  postService,
+  patchService,
+  deleteService,
+  getAllServices,
+};

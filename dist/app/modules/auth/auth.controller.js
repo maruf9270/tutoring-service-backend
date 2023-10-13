@@ -16,6 +16,21 @@ exports.AuthController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const auth_services_1 = require("./auth.services");
+// For getting all user
+const gethUsers = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const users = yield auth_services_1.AuthServices.fetchUsers();
+        (0, sendResponse_1.default)(res, {
+            data: users,
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Users featched successfully',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 // For creating new user
 const createNewUser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -53,4 +68,45 @@ const loginUsr = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
         next(error);
     }
 });
-exports.AuthController = { createNewUser, loginUsr };
+// For updaing
+const updateUinfo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const uinfo = req.user;
+        const uidr = req.params.id;
+        const data = req.body;
+        const result = yield auth_services_1.AuthServices.patchUser(data, uidr, uinfo);
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            message: 'User updated successfully',
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// FOr removing tuser
+const removeuser = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const uinfo = req.user;
+        const uidr = req.params.id;
+        const result = yield auth_services_1.AuthServices.deleteUser(uidr, uinfo);
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            message: 'User deleted successfully',
+            success: true,
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.AuthController = {
+    createNewUser,
+    loginUsr,
+    updateUinfo,
+    removeuser,
+    gethUsers,
+};

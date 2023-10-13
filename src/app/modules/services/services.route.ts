@@ -5,6 +5,9 @@ import validateRequest from '../../middlewares/validateRequest';
 import { ServiceController } from './services.controller';
 import { ServiceValidator } from './services.validate';
 const router = express.Router();
+
+// For getting all the services available
+router.get('/', ServiceController.getServices);
 // For creataign new services
 router.post(
   '/',

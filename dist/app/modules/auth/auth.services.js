@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthServices = void 0;
+exports.AuthServices = exports.patchUser = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const http_status_1 = __importDefault(require("http-status"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -20,6 +20,11 @@ const config_1 = __importDefault(require("../../../config"));
 const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const emailCapitalLetter_1 = require("../../../helpers/emailCapitalLetter");
 const auth_schema_1 = require("./auth.schema");
+// For getting all the users
+const fetchUsers = () => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_schema_1.Auth.find();
+    return result;
+});
 // For creating new user
 const postUser = (params) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield auth_schema_1.Auth.create(params);
@@ -43,4 +48,38 @@ const login = (params) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken: accessToken,
     };
 });
-exports.AuthServices = { postUser, login };
+// For updaing the user
+const patchUser = (params, uidr, uinfo) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserExists = yield auth_schema_1.Auth.findById(uidr);
+    const isUinfoReal = yield auth_schema_1.Auth.findById(uinfo.id);
+    if ((isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal._id) !== (isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists._id) ||
+        (isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal.role) !== 'super_admin') {
+        if ((isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal.role) !== 'admin') {
+            throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'YOu are not authorized to to the action');
+        }
+    }
+    const result = yield auth_schema_1.Auth.updateOne({ _id: uidr }, params);
+    return result;
+});
+exports.patchUser = patchUser;
+// for deleting user
+const deleteUser = (params, user) => __awaiter(void 0, void 0, void 0, function* () {
+    const isUserAuthorized = yield auth_schema_1.Auth.findOne({
+        _id: user.id,
+        role: user.role,
+    });
+    if (!isUserAuthorized || isUserAuthorized.role !== 'admin') {
+        if ((isUserAuthorized === null || isUserAuthorized === void 0 ? void 0 : isUserAuthorized.role) !== 'super_admin') {
+            throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'YOu are not authorized to do the action');
+        }
+    }
+    const result = yield auth_schema_1.Auth.deleteOne({ _id: params });
+    return result;
+});
+exports.AuthServices = {
+    postUser,
+    login,
+    patchUser: exports.patchUser,
+    deleteUser,
+    fetchUsers,
+};

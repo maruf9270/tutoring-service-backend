@@ -24,7 +24,8 @@ const getAllReviews: RequestHandler = async (req, res, next) => {
 const createReview: RequestHandler = async (req, res, next) => {
   try {
     const review = req.body;
-    const result = await ReviewService.postReview(review);
+    const user = req.user;
+    const result = await ReviewService.postReview(review, user as IUser);
     sendResponse(res, {
       message: 'review successfully created',
       statusCode: httpStatus.OK,
@@ -72,6 +73,7 @@ const removeReview: RequestHandler = async (req, res, next) => {
 const specifreview: RequestHandler = async (req, res, next): Promise<void> => {
   try {
     const id = req.params.id;
+    console.log(id);
     const result = await ReviewService.fetchReview(id);
     sendResponse(res, {
       success: true,

@@ -1,4 +1,5 @@
 import httpStatus from 'http-status';
+import { ObjectId } from 'mongodb';
 import ApiError from '../../../errors/ApiError';
 import { IUser } from '../auth/auth.interface';
 import { IReview } from './review.interface';
@@ -11,9 +12,23 @@ const reviews = async (): Promise<IReview[]> => {
 };
 
 // For creating a new review
-const postReview = async (params: IReview): Promise<IReview | null> => {
+const postReview = async (
+  params: IReview,
+  user: IUser
+): Promise<IReview | null> => {
+  const doesReviewExist = await Review.find({
+    userId: user.id,
+    serviceId: params.serviceId,
+  });
+  if (doesReviewExist) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Review already exists');
+  }
+  const data = {
+    ...params,
+    userId: user.id,
+  };
   const result = (
-    await (await Review.create(params)).populate('userId')
+    await (await Review.create(data)).populate('userId')
   ).populate('serviceId');
   return result;
 };
@@ -24,17 +39,21 @@ const patchReview = async (
   user: IUser,
   id: string
 ): Promise<IReview | null> => {
-  const doesRwviewexist = await Review.findOne({ _id: id, userId: user.id });
+  const doesRwviewexist = await Review.find({
+    _id: id,
+    serviceId: params.serviceId,
+  });
+
   if (!doesRwviewexist) {
     throw new ApiError(
       httpStatus.FORBIDDEN,
       'Review not found or you are not allowed to editReview'
     );
   }
-  const result = await Review.findOneAndUpdate({ _id: id }, params)
-    .populate('userId')
-    .populate('serviceId');
-  return result;
+  const result = await Review.updateOne({ _id: new ObjectId(id) }, params, {
+    new: true,
+  });
+  return result as unknown as IReview;
 };
 
 // For deleting a review

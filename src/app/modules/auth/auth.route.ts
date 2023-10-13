@@ -5,6 +5,12 @@ import validateRequest from '../../middlewares/validateRequest';
 import { AuthController } from './auth.controller';
 import { AuthValidator } from './auth.validator';
 const routes = express.Router();
+// For gettng all the users
+routes.get(
+  '/',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.gethUsers
+);
 // For Creating new user
 routes.post(
   '/register',
