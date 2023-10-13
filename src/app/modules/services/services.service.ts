@@ -1,0 +1,24 @@
+import { IService } from './services.interface';
+import { Service } from './services.schema';
+
+// For creating a new services
+const postService = async (params: IService): Promise<IService> => {
+  const result = await Service.create(params);
+  return result;
+};
+
+// for updaing a service
+const patchService = async (
+  params: Partial<IService>,
+  id: string
+): Promise<IService | null> => {
+  const result = await Service.findByIdAndUpdate(id, params, { new: true });
+  return result;
+};
+
+// For deleting a service
+const deleteService = async (params: string): Promise<IService | null> => {
+  const result = await Service.findByIdAndDelete(params);
+  return result;
+};
+export const ServicesService = { postService, patchService, deleteService };
