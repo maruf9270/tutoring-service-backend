@@ -19,3 +19,7 @@ export type ITokens = {
   accessToken: string;
   refreashToken: string;
 };
+export type IUser = {
+  role: string;
+  id: string;
+};

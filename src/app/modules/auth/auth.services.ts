@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt';
 import httpStatus from 'http-status';
 import jwt, { Secret } from 'jsonwebtoken';
+import { UpdateWriteOpResult } from 'mongoose';
 import config from '../../../config';
 import ApiError from '../../../errors/ApiError';
 import { InvertToUppercast } from '../../../helpers/emailCapitalLetter';
-import { IAuth, ILogin, ITokens } from './auth.interface';
+import { IAuth, ILogin, ITokens, IUser } from './auth.interface';
 import { Auth } from './auth.schema';
 
 // For creating new user
@@ -42,4 +43,43 @@ const login = async (params: ILogin): Promise<ITokens> => {
     accessToken: accessToken,
   };
 };
-export const AuthServices = { postUser, login };
+// For updaing the user
+export const patchUser = async (
+  params: Partial<IAuth>,
+  uidr: string,
+  uinfo: { id: string; role: string }
+): Promise<UpdateWriteOpResult> => {
+  const isUserExists = await Auth.findById(uidr);
+  const isUinfoReal = await Auth.findById(uinfo.id);
+  if (
+    isUinfoReal?._id !== isUserExists?._id ||
+    isUinfoReal?.role !== 'super_admin'
+  ) {
+    if (isUinfoReal?.role !== 'admin') {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'YOu are not authorized to to the action'
+      );
+    }
+  }
+  const result = await Auth.updateOne({ _id: uidr }, params);
+  return result;
+};
+// for deleting user
+const deleteUser = async (params: string, user: IUser) => {
+  const isUserAuthorized = await Auth.findOne({
+    _id: user.id,
+    role: user.role,
+  });
+  if (!isUserAuthorized || isUserAuthorized.role !== 'admin') {
+    if (isUserAuthorized?.role !== 'super_admin') {
+      throw new ApiError(
+        httpStatus.UNAUTHORIZED,
+        'YOu are not authorized to do the action'
+      );
+    }
+  }
+  const result = await Auth.deleteOne({ _id: params });
+  return result;
+};
+export const AuthServices = { postUser, login, patchUser, deleteUser };

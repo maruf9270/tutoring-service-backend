@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
 import sendResponse from '../../../shared/sendResponse';
+import { IUser } from './auth.interface';
 import { AuthServices } from './auth.services';
 
 // For creating new user
@@ -41,4 +42,43 @@ const loginUsr: RequestHandler = async (req, res, next): Promise<void> => {
     next(error);
   }
 };
-export const AuthController = { createNewUser, loginUsr };
+// For updaing
+const updateUinfo: RequestHandler = async (req, res, next) => {
+  try {
+    const uinfo = req.user;
+    const uidr = req.params.id;
+    const data = req.body;
+    const result = await AuthServices.patchUser(data, uidr, uinfo as IUser);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'User updated successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+// FOr removing tuser
+const removeuser: RequestHandler = async (req, res, next) => {
+  try {
+    const uinfo = req.user;
+    const uidr = req.params.id;
+
+    const result = await AuthServices.deleteUser(uidr, uinfo as IUser);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      message: 'User deleted successfully',
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const AuthController = {
+  createNewUser,
+  loginUsr,
+  updateUinfo,
+  removeuser,
+};
