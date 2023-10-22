@@ -86,17 +86,40 @@ const getBookings = (params) => __awaiter(void 0, void 0, void 0, function* () {
         throw new ApiError_1.default(http_status_1.default.FORBIDDEN, 'Forbidden');
     }
     if (findUser.role === 'user') {
-        const bookings = yield serviceBooking_model_1.Booking.find({ userId: params.id });
+        const bookings = yield serviceBooking_model_1.Booking.find({ userId: params.id })
+            .populate('userId')
+            .populate('serviceId');
         return bookings;
     }
     if (findUser.role === 'admin' || findUser.role === 'super_admin') {
-        const bookings = yield serviceBooking_model_1.Booking.find();
+        const bookings = yield serviceBooking_model_1.Booking.find()
+            .populate('userId')
+            .populate('serviceId');
         return bookings;
     }
+});
+// FOr getitng availabe slots
+const slots = (params) => __awaiter(void 0, void 0, void 0, function* () {
+    const bookings = yield serviceBooking_model_1.Booking.find({
+        serviceId: params.serviceId,
+        date: params.date,
+    });
+    if (bookings.length > 0) {
+        return serviceBooking_constant_1.Slots;
+    }
+    const bookedSlots = bookings.map(slot => {
+        return slot.slot;
+    });
+    const totalSlots = serviceBooking_constant_1.Slots;
+    const availableSlots = totalSlots.filter(slot => {
+        return !bookedSlots.includes(slot);
+    });
+    return availableSlots;
 });
 exports.ServiceBookingService = {
     bookService,
     cancelBooking,
     patchStatus,
     getBookings,
+    slots,
 };

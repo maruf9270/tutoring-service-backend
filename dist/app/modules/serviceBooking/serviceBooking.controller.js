@@ -85,9 +85,25 @@ const getBookings = (req, res, next) => __awaiter(void 0, void 0, void 0, functi
         next(error);
     }
 });
+// For availabe
+const availabe = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const aslots = yield serviceBooking_service_1.ServiceBookingService.slots(req.body);
+        (0, sendResponse_1.default)(res, {
+            data: aslots,
+            success: true,
+            statusCode: http_status_1.default.OK,
+            message: 'Solots successfully found',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.ServiceBookingController = {
     bookservice,
     cancelBooking,
     patchStatus,
     getBookings,
+    availabe,
 };

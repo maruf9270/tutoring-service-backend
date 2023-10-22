@@ -8,7 +8,7 @@ export type IAuth = {
   email: string;
   phone: string;
   address: string;
-  profileImage: string;
+  profileImage: Record<string, null>;
   password: string;
 };
 export type ILogin = {

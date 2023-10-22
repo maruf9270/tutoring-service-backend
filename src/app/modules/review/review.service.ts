@@ -7,7 +7,7 @@ import { Review } from './review.model';
 
 // For getting all the reviews
 const reviews = async (): Promise<IReview[]> => {
-  const review = await Review.find();
+  const review = await Review.find().populate('userId');
   return review;
 };
 
@@ -20,7 +20,7 @@ const postReview = async (
     userId: user.id,
     serviceId: params.serviceId,
   });
-  if (doesReviewExist) {
+  if (doesReviewExist.length > 0) {
     throw new ApiError(httpStatus.BAD_REQUEST, 'Review already exists');
   }
   const data = {
@@ -79,6 +79,7 @@ const deleteReview = async (
 // Fetching a specific review
 const fetchReview = async (id: string) => {
   const reviews = await Review.find({ serviceId: id })
+    .populate('userId')
     .populate('userId')
     .populate('serviceId');
   return reviews;

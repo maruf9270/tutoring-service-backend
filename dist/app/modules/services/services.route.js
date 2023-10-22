@@ -15,6 +15,8 @@ const router = express_1.default.Router();
 router.get('/', services_controller_1.ServiceController.getServices);
 // For creataign new services
 router.post('/', (0, validateRequest_1.default)(services_validate_1.ServiceValidator.serviceValidator), (0, auth_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), services_controller_1.ServiceController.createNewService);
+// For getting a single service
+router.get('/:id', services_controller_1.ServiceController.getSingleService);
 // For updaing the service
 router.patch('/:id', (0, auth_1.default)(user_1.ENUM_USER_ROLE.SUPER_ADMIN, user_1.ENUM_USER_ROLE.ADMIN), (0, validateRequest_1.default)(services_validate_1.ServiceValidator.updateValidator), services_controller_1.ServiceController.updateService);
 // For deleting the service

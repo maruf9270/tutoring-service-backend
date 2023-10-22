@@ -1,6 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.category = void 0;
+exports.category = exports.serviceFilterableFields = void 0;
+exports.serviceFilterableFields = [
+    'searchTerm',
+    'title',
+    'description',
+    'available',
+    'category',
+    'price',
+];
 exports.category = [
     'academic',
     'test preparation',

@@ -71,10 +71,9 @@ const loginUsr = (req, res, next) => __awaiter(void 0, void 0, void 0, function*
 // For updaing
 const updateUinfo = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const uinfo = req.user;
         const uidr = req.params.id;
         const data = req.body;
-        const result = yield auth_services_1.AuthServices.patchUser(data, uidr, uinfo);
+        const result = yield auth_services_1.AuthServices.patchUser(data, uidr);
         (0, sendResponse_1.default)(res, {
             statusCode: http_status_1.default.OK,
             message: 'User updated successfully',
@@ -103,10 +102,45 @@ const removeuser = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         next(error);
     }
 });
+// For geting profile information
+const getProfile = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield auth_services_1.AuthServices.getProfile(req.user);
+        (0, sendResponse_1.default)(res, {
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: 'Profile fetched successfully',
+            data: result,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// For gettinga a single bu id
+const getById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const user = {
+            id: req.params.id,
+        };
+        const result = yield auth_services_1.AuthServices.getProfile(user);
+        (0, sendResponse_1.default)(res, {
+            data: result,
+            statusCode: http_status_1.default.OK,
+            success: true,
+            message: '',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
 exports.AuthController = {
     createNewUser,
     loginUsr,
     updateUinfo,
     removeuser,
     gethUsers,
+    getProfile,
+    getById,
 };

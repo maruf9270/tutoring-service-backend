@@ -1,4 +1,5 @@
 import express from 'express';
+import { CategoryRoutes } from '../category/category.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { BlogRoutes } from '../modules/blog/blog.routes';
 import { FaqRoutes } from '../modules/faq/faq.routes';
@@ -38,6 +39,10 @@ const moduleRoutes = [
   {
     path: '/blogs',
     routes: BlogRoutes.routes,
+  },
+  {
+    path: '/category',
+    routes: CategoryRoutes.routes,
   },
 ];
 

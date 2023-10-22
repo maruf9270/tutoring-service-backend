@@ -13,4 +13,10 @@ const bookingValidator = zod_1.z.object({
         status: zod_1.z.string({ required_error: 'Status is required' }).optional(),
     }),
 });
-exports.BookingValidator = { bookingValidator };
+const bookingValidator2 = zod_1.z.object({
+    body: zod_1.z.object({
+        date: zod_1.z.string({ required_error: 'Date is required0' }),
+        serviceId: zod_1.z.string({ required_error: 'Service Id is required' }),
+    }),
+});
+exports.BookingValidator = { bookingValidator, bookingValidator2 };

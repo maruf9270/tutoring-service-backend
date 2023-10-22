@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { IService, category } from './services.interface';
+import { IService } from './services.interface';
 
 const serviceSchema = new Schema<IService>(
   {
@@ -15,7 +15,6 @@ const serviceSchema = new Schema<IService>(
     category: {
       type: String,
       required: true,
-      enum: category,
     },
     available: {
       type: Boolean,

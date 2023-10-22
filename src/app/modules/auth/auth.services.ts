@@ -52,22 +52,23 @@ const login = async (params: ILogin): Promise<ITokens> => {
 // For updaing the user
 export const patchUser = async (
   params: Partial<IAuth>,
-  uidr: string,
-  uinfo: { id: string; role: string }
+  uidr: string
 ): Promise<UpdateWriteOpResult> => {
   const isUserExists = await Auth.findById(uidr);
-  const isUinfoReal = await Auth.findById(uinfo.id);
-  if (
-    isUinfoReal?._id !== isUserExists?._id ||
-    isUinfoReal?.role !== 'super_admin'
-  ) {
-    if (isUinfoReal?.role !== 'admin') {
-      throw new ApiError(
-        httpStatus.UNAUTHORIZED,
-        'YOu are not authorized to to the action'
-      );
-    }
+  if (!isUserExists) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
   }
+  // if (
+  //   isUinfoReal?._id !== isUserExists?._id ||
+  //   isUinfoReal?.role !== 'super_admin'
+  // ) {
+  //   if (isUinfoReal?.role !== 'admin') {
+  //     throw new ApiError(
+  //       httpStatus.UNAUTHORIZED,
+  //       'YOu are not authorized to to the action'
+  //     );
+  //   }
+  // }
   const result = await Auth.updateOne({ _id: uidr }, params);
   return result;
 };
@@ -88,10 +89,21 @@ const deleteUser = async (params: string, user: IUser) => {
   const result = await Auth.deleteOne({ _id: params });
   return result;
 };
+
+// For getting profile information
+
+const getProfile = async (user: Partial<IUser>): Promise<IAuth | null> => {
+  const result = await Auth.findById(user.id).select({ password: false });
+  return result;
+};
+
+// By is
+
 export const AuthServices = {
   postUser,
   login,
   patchUser,
   deleteUser,
   fetchUsers,
+  getProfile,
 };

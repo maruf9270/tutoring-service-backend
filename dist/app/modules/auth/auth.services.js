@@ -49,15 +49,22 @@ const login = (params) => __awaiter(void 0, void 0, void 0, function* () {
     };
 });
 // For updaing the user
-const patchUser = (params, uidr, uinfo) => __awaiter(void 0, void 0, void 0, function* () {
+const patchUser = (params, uidr) => __awaiter(void 0, void 0, void 0, function* () {
     const isUserExists = yield auth_schema_1.Auth.findById(uidr);
-    const isUinfoReal = yield auth_schema_1.Auth.findById(uinfo.id);
-    if ((isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal._id) !== (isUserExists === null || isUserExists === void 0 ? void 0 : isUserExists._id) ||
-        (isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal.role) !== 'super_admin') {
-        if ((isUinfoReal === null || isUinfoReal === void 0 ? void 0 : isUinfoReal.role) !== 'admin') {
-            throw new ApiError_1.default(http_status_1.default.UNAUTHORIZED, 'YOu are not authorized to to the action');
-        }
+    if (!isUserExists) {
+        throw new ApiError_1.default(http_status_1.default.NOT_FOUND, 'User not found');
     }
+    // if (
+    //   isUinfoReal?._id !== isUserExists?._id ||
+    //   isUinfoReal?.role !== 'super_admin'
+    // ) {
+    //   if (isUinfoReal?.role !== 'admin') {
+    //     throw new ApiError(
+    //       httpStatus.UNAUTHORIZED,
+    //       'YOu are not authorized to to the action'
+    //     );
+    //   }
+    // }
     const result = yield auth_schema_1.Auth.updateOne({ _id: uidr }, params);
     return result;
 });
@@ -76,10 +83,17 @@ const deleteUser = (params, user) => __awaiter(void 0, void 0, void 0, function*
     const result = yield auth_schema_1.Auth.deleteOne({ _id: params });
     return result;
 });
+// For getting profile information
+const getProfile = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield auth_schema_1.Auth.findById(user.id).select({ password: false });
+    return result;
+});
+// By is
 exports.AuthServices = {
     postUser,
     login,
     patchUser: exports.patchUser,
     deleteUser,
     fetchUsers,
+    getProfile,
 };

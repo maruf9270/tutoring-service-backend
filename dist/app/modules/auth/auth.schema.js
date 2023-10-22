@@ -55,7 +55,7 @@ const authSchema = new mongoose_1.Schema({
         required: true,
     },
     profileImage: {
-        type: String,
+        type: Object,
         required: true,
     },
     password: {

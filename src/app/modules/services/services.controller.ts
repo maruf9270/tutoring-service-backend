@@ -1,7 +1,12 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
+import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
-import { ServicesService } from './services.service';
+import {
+  serviceFilterableField,
+  serviceFilterableFields,
+} from './services.interface';
+import { ServicesService, paginationOption } from './services.service';
 
 // For creataign new services
 const createNewService: RequestHandler = async (
@@ -55,7 +60,29 @@ const deleteService: RequestHandler = async (req, res, next) => {
 //for getting services
 const getServices: RequestHandler = async (req, res, next) => {
   try {
-    const result = await ServicesService.getAllServices();
+    console.log(req.params);
+    const filterableFIelds = pick(req.query, serviceFilterableFields);
+    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const result = await ServicesService.getAllServices(
+      filterableFIelds as serviceFilterableField,
+      options as unknown as paginationOption
+    );
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      data: result,
+      message: 'Services retrieved successfully',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// For getting single services
+
+const getSingleService: RequestHandler = async (req, res, next) => {
+  try {
+    const result = await ServicesService.getSingleService(req.params.id);
     sendResponse(res, {
       success: true,
       statusCode: httpStatus.OK,
@@ -72,4 +99,5 @@ export const ServiceController = {
   updateService,
   deleteService,
   getServices,
+  getSingleService,
 };

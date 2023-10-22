@@ -75,9 +75,25 @@ const getBookings: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+// For availabe
+const availabe: RequestHandler = async (req, res, next) => {
+  try {
+    const aslots: unknown = await ServiceBookingService.slots(req.body);
+
+    sendResponse(res, {
+      data: aslots,
+      success: true,
+      statusCode: httpStatus.OK,
+      message: 'Solots successfully found',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const ServiceBookingController = {
   bookservice,
   cancelBooking,
   patchStatus,
   getBookings,
+  availabe,
 };

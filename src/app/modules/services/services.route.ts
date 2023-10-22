@@ -15,6 +15,9 @@ router.post(
   auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
   ServiceController.createNewService
 );
+
+// For getting a single service
+router.get('/:id', ServiceController.getSingleService);
 // For updaing the service
 router.patch(
   '/:id',

@@ -96,17 +96,42 @@ const getBookings = async (params: IUser) => {
     throw new ApiError(httpStatus.FORBIDDEN, 'Forbidden');
   }
   if (findUser.role === 'user') {
-    const bookings = await Booking.find({ userId: params.id });
+    const bookings = await Booking.find({ userId: params.id })
+      .populate('userId')
+      .populate('serviceId');
     return bookings;
   }
   if (findUser.role === 'admin' || findUser.role === 'super_admin') {
-    const bookings = await Booking.find();
+    const bookings = await Booking.find()
+      .populate('userId')
+      .populate('serviceId');
     return bookings;
   }
+};
+
+// FOr getitng availabe slots
+const slots = async (params: Partial<IBooking>) => {
+  const bookings = await Booking.find({
+    serviceId: params.serviceId,
+    date: params.date,
+  });
+  if (bookings.length > 0) {
+    return Slots;
+  }
+  const bookedSlots = bookings.map(slot => {
+    return slot.slot;
+  });
+  const totalSlots = Slots;
+  const availableSlots = totalSlots.filter(slot => {
+    return !bookedSlots.includes(slot);
+  });
+
+  return availableSlots;
 };
 export const ServiceBookingService = {
   bookService,
   cancelBooking,
   patchStatus,
   getBookings,
+  slots,
 };

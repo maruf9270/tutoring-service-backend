@@ -42,7 +42,7 @@ const authSchema = new Schema<IAuth>({
     required: true,
   },
   profileImage: {
-    type: String,
+    type: Object,
     required: true,
   },
   password: {

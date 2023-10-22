@@ -14,7 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ServiceController = void 0;
 const http_status_1 = __importDefault(require("http-status"));
+const pick_1 = __importDefault(require("../../../shared/pick"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
+const services_interface_1 = require("./services.interface");
 const services_service_1 = require("./services.service");
 // For creataign new services
 const createNewService = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
@@ -64,7 +66,25 @@ const deleteService = (req, res, next) => __awaiter(void 0, void 0, void 0, func
 //for getting services
 const getServices = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const result = yield services_service_1.ServicesService.getAllServices();
+        console.log(req.params);
+        const filterableFIelds = (0, pick_1.default)(req.query, services_interface_1.serviceFilterableFields);
+        const options = (0, pick_1.default)(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+        const result = yield services_service_1.ServicesService.getAllServices(filterableFIelds, options);
+        (0, sendResponse_1.default)(res, {
+            success: true,
+            statusCode: http_status_1.default.OK,
+            data: result,
+            message: 'Services retrieved successfully',
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+// For getting single services
+const getSingleService = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const result = yield services_service_1.ServicesService.getSingleService(req.params.id);
         (0, sendResponse_1.default)(res, {
             success: true,
             statusCode: http_status_1.default.OK,
@@ -81,4 +101,5 @@ exports.ServiceController = {
     updateService,
     deleteService,
     getServices,
+    getSingleService,
 };

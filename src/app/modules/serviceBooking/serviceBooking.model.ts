@@ -26,7 +26,7 @@ const bookingSchema = new Schema<IBooking>({
     type: String,
     required: true,
     default: 'pending',
-    enum: ['pending', 'accepted', 'rejected', 'pending'],
+    enum: ['pending', 'accepted', 'rejected', 'cancelled'],
   },
 });
 

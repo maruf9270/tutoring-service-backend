@@ -61,10 +61,9 @@ const loginUsr: RequestHandler = async (req, res, next): Promise<void> => {
 // For updaing
 const updateUinfo: RequestHandler = async (req, res, next) => {
   try {
-    const uinfo = req.user;
     const uidr = req.params.id;
     const data = req.body;
-    const result = await AuthServices.patchUser(data, uidr, uinfo as IUser);
+    const result = await AuthServices.patchUser(data, uidr);
     sendResponse(res, {
       statusCode: httpStatus.OK,
       message: 'User updated successfully',
@@ -92,10 +91,46 @@ const removeuser: RequestHandler = async (req, res, next) => {
     next(error);
   }
 };
+
+// For geting profile information
+
+const getProfile: RequestHandler = async (req, res, next) => {
+  try {
+    const result = await AuthServices.getProfile(req.user as IUser);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Profile fetched successfully',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// For gettinga a single bu id
+const getById: RequestHandler = async (req, res, next) => {
+  try {
+    const user = {
+      id: req.params.id,
+    };
+    const result = await AuthServices.getProfile(user);
+    sendResponse(res, {
+      data: result,
+      statusCode: httpStatus.OK,
+      success: true,
+      message: '',
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const AuthController = {
   createNewUser,
   loginUsr,
   updateUinfo,
   removeuser,
   gethUsers,
+  getProfile,
+  getById,
 };

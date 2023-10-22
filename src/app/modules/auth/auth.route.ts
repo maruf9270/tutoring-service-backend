@@ -24,6 +24,18 @@ routes.post(
   validateRequest(AuthValidator.loginVlaidator),
   AuthController.loginUsr
 );
+// For getting profofile
+routes.get(
+  '/profile',
+  auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.getProfile
+);
+// For getting single
+routes.get(
+  '/:id',
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
+  AuthController.getById
+);
 // For updaing user
 routes.patch(
   '/:id',
@@ -34,7 +46,7 @@ routes.patch(
 // for deleting user
 routes.delete(
   '/:id',
-  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.USER),
+  auth(ENUM_USER_ROLE.ADMIN, ENUM_USER_ROLE.SUPER_ADMIN),
   AuthController.removeuser
 );
 export const AuthRoutes = { routes };

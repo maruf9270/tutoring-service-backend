@@ -12,4 +12,10 @@ const bookingValidator = z.object({
   }),
 });
 
-export const BookingValidator = { bookingValidator };
+const bookingValidator2 = z.object({
+  body: z.object({
+    date: z.string({ required_error: 'Date is required0' }),
+    serviceId: z.string({ required_error: 'Service Id is required' }),
+  }),
+});
+export const BookingValidator = { bookingValidator, bookingValidator2 };

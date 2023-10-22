@@ -4,7 +4,7 @@ exports.ReviewValidator = void 0;
 const zod_1 = require("zod");
 const reviewValidator = zod_1.z.object({
     body: zod_1.z.object({
-        rating: zod_1.z.string({ required_error: 'Rating not provided' }),
+        rating: zod_1.z.number({ required_error: 'Rating not provided' }),
         review: zod_1.z.string({ required_error: 'Review not provided' }),
         serviceId: zod_1.z.string({ required_error: 'Service id not provided' }),
     }),

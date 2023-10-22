@@ -19,7 +19,7 @@ const ApiError_1 = __importDefault(require("../../../errors/ApiError"));
 const review_model_1 = require("./review.model");
 // For getting all the reviews
 const reviews = () => __awaiter(void 0, void 0, void 0, function* () {
-    const review = yield review_model_1.Review.find();
+    const review = yield review_model_1.Review.find().populate('userId');
     return review;
 });
 // For creating a new review
@@ -28,7 +28,7 @@ const postReview = (params, user) => __awaiter(void 0, void 0, void 0, function*
         userId: user.id,
         serviceId: params.serviceId,
     });
-    if (doesReviewExist) {
+    if (doesReviewExist.length > 0) {
         throw new ApiError_1.default(http_status_1.default.BAD_REQUEST, 'Review already exists');
     }
     const data = Object.assign(Object.assign({}, params), { userId: user.id });
@@ -66,6 +66,7 @@ const deleteReview = (params, user) => __awaiter(void 0, void 0, void 0, functio
 // Fetching a specific review
 const fetchReview = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const reviews = yield review_model_1.Review.find({ serviceId: id })
+        .populate('userId')
         .populate('userId')
         .populate('serviceId');
     return reviews;

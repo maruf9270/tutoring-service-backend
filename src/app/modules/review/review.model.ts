@@ -8,7 +8,7 @@ const reviewSchema = new Schema<IReview>({
     ref: 'auth',
   },
   rating: {
-    type: String,
+    type: Number,
     required: true,
   },
   review: {

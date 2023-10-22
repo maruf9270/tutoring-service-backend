@@ -1,3 +1,22 @@
+export const serviceFilterableFields: string[] = [
+  'searchTerm',
+  'title',
+  'description',
+  'available',
+  'category',
+  'price',
+];
+
+export type serviceFilterableField = {
+  searchTerm: string;
+  title: string;
+  description: string;
+  available: string;
+  category: string;
+  minPrice: string;
+  maxPrice: string;
+};
+
 export type Icategory =
   | 'academic'
   | 'test preparation'
@@ -13,7 +32,7 @@ export type Icategory =
 
 export type IService = {
   title: string;
-  category: Icategory;
+  category: string;
   price: number;
   available: boolean;
   publish: boolean;

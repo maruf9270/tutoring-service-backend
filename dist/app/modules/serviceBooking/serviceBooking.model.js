@@ -27,7 +27,7 @@ const bookingSchema = new mongoose_1.Schema({
         type: String,
         required: true,
         default: 'pending',
-        enum: ['pending', 'accepted', 'rejected', 'pending'],
+        enum: ['pending', 'accepted', 'rejected', 'cancelled'],
     },
 });
 exports.Booking = (0, mongoose_1.model)('bookings', bookingSchema);
