@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import { Icategory } from '../modules/services/services.interface';
+import { Icategory } from '../services/services.interface';
 
 const categoryschema = new Schema<Icategory>({
   title: {

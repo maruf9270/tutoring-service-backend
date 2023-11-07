@@ -1,4 +1,4 @@
-import { Icategory } from '../modules/services/services.interface';
+import { Icategory } from '../services/services.interface';
 import { Category } from './category.model';
 
 // For creating category

@@ -1,10 +1,23 @@
+export const paginationOpeions: string[] = [
+  'limit',
+  'page',
+  'sortBy',
+  'sortOrder',
+];
+export type paginationOption = {
+  page: number;
+  limit: number;
+  sortBy: string;
+  sortOrder: string;
+};
 export const serviceFilterableFields: string[] = [
   'searchTerm',
   'title',
   'description',
   'available',
   'category',
-  'price',
+  'minPrice',
+  'maxPrice',
 ];
 
 export type serviceFilterableField = {

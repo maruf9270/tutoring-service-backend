@@ -1,7 +1,9 @@
 import { SortOrder } from 'mongoose';
 import { paginationHelpers } from '../../../helpers/paginationHelper';
+import { IUser } from '../auth/auth.interface';
 import {
   IService,
+  paginationOption,
   serviceFilterableField,
   serviceFilterableFields,
 } from './services.interface';
@@ -28,17 +30,11 @@ const deleteService = async (params: string): Promise<IService | null> => {
   return result;
 };
 
-export type paginationOption = {
-  page: number;
-  limit: number;
-  sortBy: string;
-  sortOrder: string;
-};
-
 // For getting all the services
 const getAllServices = async (
   filters: serviceFilterableField,
-  paginationOptions: paginationOption
+  paginationOptions: paginationOption,
+  user: IUser | undefined
 ) => {
   const { searchTerm, ...filtersData } = filters;
   const { page, limit, skip, sortBy, sortOrder } =
@@ -59,12 +55,29 @@ const getAllServices = async (
   // Filters needs $and to fullfill all the conditions
   if (Object.keys(filtersData).length) {
     andConditions.push({
-      $and: Object.entries(filtersData).map(([field, value]) => ({
-        [field]: value,
-      })),
+      $and: Object.entries(filtersData).map(([field, value]) => {
+        if (Object.keys(filtersData).includes('minPrice')) {
+          return {
+            price: { $gte: value },
+          };
+        }
+        if (Object.keys(filtersData).includes('maxPrice')) {
+          return {
+            price: { $lte: value },
+          };
+        } else {
+          return {
+            [field]: value,
+          };
+        }
+      }),
     });
   }
 
+  // Checking if the user is admin for providing unavailabel service
+  if (user?.role == 'user' || user?.role == undefined) {
+    andConditions.push({ publish: true });
+  }
   // Dynamic  Sort needs  field to  do sorting
   const sortConditions: { [key: string]: SortOrder } = {};
   if (sortBy && sortOrder) {

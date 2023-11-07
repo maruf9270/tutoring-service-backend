@@ -1,12 +1,17 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
+import { Secret } from 'jsonwebtoken';
+import config from '../../../config';
+import { jwtHelpers } from '../../../helpers/jwtHelpers';
 import pick from '../../../shared/pick';
 import sendResponse from '../../../shared/sendResponse';
+import { paginationOptions } from './service.constant';
 import {
+  paginationOption,
   serviceFilterableField,
   serviceFilterableFields,
 } from './services.interface';
-import { ServicesService, paginationOption } from './services.service';
+import { ServicesService } from './services.service';
 
 // For creataign new services
 const createNewService: RequestHandler = async (
@@ -60,12 +65,21 @@ const deleteService: RequestHandler = async (req, res, next) => {
 //for getting services
 const getServices: RequestHandler = async (req, res, next) => {
   try {
-    console.log(req.params);
+    const token = req.headers.authorization;
+    let user = undefined;
+    if (token) {
+      user = jwtHelpers.verifyToken(
+        token as string,
+        config.jwt.secret as Secret
+      );
+    }
+
     const filterableFIelds = pick(req.query, serviceFilterableFields);
-    const options = pick(req.query, ['limit', 'page', 'sortBy', 'sortOrder']);
+    const options = pick(req.query, paginationOptions);
     const result = await ServicesService.getAllServices(
       filterableFIelds as serviceFilterableField,
-      options as unknown as paginationOption
+      options as unknown as paginationOption,
+      user as never
     );
     sendResponse(res, {
       success: true,

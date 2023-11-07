@@ -1,7 +1,7 @@
 import express from 'express';
-import { CategoryRoutes } from '../category/category.route';
 import { AuthRoutes } from '../modules/auth/auth.route';
 import { BlogRoutes } from '../modules/blog/blog.routes';
+import { CategoryRoutes } from '../modules/category/category.route';
 import { FaqRoutes } from '../modules/faq/faq.routes';
 import { FeedBackRoutes } from '../modules/feedback/feedback.routes';
 import { ReviewRoutes } from '../modules/review/review.route';

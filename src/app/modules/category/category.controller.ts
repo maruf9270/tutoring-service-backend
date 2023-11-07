@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import httpStatus from 'http-status';
-import sendResponse from '../../shared/sendResponse';
+import sendResponse from '../../../shared/sendResponse';
 import { CategoryService } from './category.service';
 
 // For creataign new category
